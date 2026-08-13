@@ -1,0 +1,867 @@
+/* ==========================================================================
+   Better Maps - Google Maps Dark Mode Styling
+   ========================================================================== */
+
+:root {
+  /* Fonts */
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Outfit', sans-serif;
+
+  /* Google Dark Theme Palette */
+  --gm-bg: #1d1e21;
+  --gm-surface: #202124;
+  --gm-surface-elevated: #28292c;
+  --gm-hover: #303134;
+  --gm-active: #3c4043;
+  --gm-border: #3c4043;
+  --gm-border-light: rgba(255, 255, 255, 0.12);
+
+  /* Google Accent Colors */
+  --gm-blue: #8ab4f8;
+  --gm-blue-dark: #1a73e8;
+  --gm-blue-light: #aecbfa;
+  --gm-purple: #c58af9;
+  --gm-red: #f28b82;
+  --gm-green: #81c995;
+  --gm-yellow: #fde293;
+
+  /* Text Colors */
+  --gm-text-primary: #e8eaed;
+  --gm-text-secondary: #9aa0a6;
+  --gm-text-muted: #70757a;
+
+  /* Shadows */
+  --gm-shadow-card: 0 2px 6px 0 rgba(0, 0, 0, 0.4), 0 4px 12px 0 rgba(0, 0, 0, 0.3);
+  --gm-shadow-panel: 0 8px 24px 0 rgba(0, 0, 0, 0.6);
+  --gm-shadow-fab: 0 3px 8px 0 rgba(0, 0, 0, 0.5);
+
+  /* Scrollbar */
+  --scrollbar-thumb: #484b50;
+  --scrollbar-track: #202124;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--gm-bg);
+  color: var(--gm-text-primary);
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  color-scheme: dark;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom scrollbars */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#app-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+}
+
+#map-container {
+  flex: 1;
+  height: 100%;
+  position: relative;
+  background-color: #0e111d;
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+}
+
+/* ==========================================================================
+   1. Top Simulation Badge
+   ========================================================================== */
+
+.gmaps-pill-badge {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  background: rgba(32, 33, 36, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--gm-border);
+  border-radius: 20px;
+  padding: 6px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.78rem;
+  box-shadow: var(--gm-shadow-card);
+  z-index: 10;
+  transition: all 0.3s ease;
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  background-color: var(--gm-green);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--gm-green);
+  animation: pulse-glow 2s infinite;
+}
+
+@keyframes pulse-glow {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(129, 201, 149, 0.7); }
+  70% { transform: scale(1.1); box-shadow: 0 0 0 8px rgba(129, 201, 149, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(129, 201, 149, 0); }
+}
+
+.sim-title {
+  font-weight: 600;
+  color: var(--gm-text-primary);
+}
+
+.sim-coords {
+  color: var(--gm-text-secondary);
+  font-family: monospace;
+  font-size: 0.76rem;
+}
+
+.sim-hint {
+  color: var(--gm-text-muted);
+  font-size: 0.72rem;
+  border-left: 1px solid var(--gm-border);
+  padding-left: 10px;
+}
+
+/* ==========================================================================
+   2. Top-Left Google Maps Search Widget & Category Chips
+   ========================================================================== */
+
+#gmaps-top-container {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 392px;
+  max-width: calc(100vw - 24px);
+}
+
+/* Search Box Card */
+#gmaps-search-card {
+  background: var(--gm-surface);
+  border: 1px solid var(--gm-border);
+  border-radius: 24px;
+  height: 48px;
+  padding: 4px 8px 4px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: var(--gm-shadow-card);
+  transition: all 0.2s ease;
+}
+
+#gmaps-search-card:focus-within {
+  background: var(--gm-surface-elevated);
+  border-color: var(--gm-blue);
+  box-shadow: 0 0 0 1px var(--gm-blue), var(--gm-shadow-card);
+}
+
+.gmaps-icon-btn {
+  background: transparent;
+  border: none;
+  color: var(--gm-text-secondary);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.gmaps-icon-btn:hover {
+  background: var(--gm-hover);
+  color: var(--gm-text-primary);
+}
+
+.action-btn-blue {
+  color: var(--gm-blue);
+}
+
+.action-btn-blue:hover {
+  background: rgba(138, 180, 248, 0.15);
+  color: var(--gm-blue-light);
+}
+
+.ai-sparkle-btn {
+  color: var(--gm-purple);
+}
+
+.ai-sparkle-btn:hover {
+  background: rgba(197, 138, 249, 0.15);
+  color: #d69eff;
+}
+
+.gmaps-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--gm-border);
+  margin: 0 2px;
+}
+
+.search-input-wrapper {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-input-wrapper input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--gm-text-primary);
+  font-family: var(--font-family);
+  font-size: 0.92rem;
+  font-weight: 400;
+  padding-right: 28px;
+}
+
+.search-input-wrapper input::placeholder {
+  color: var(--gm-text-secondary);
+}
+
+.search-icon {
+  position: absolute;
+  right: 6px;
+  color: var(--gm-text-muted);
+  font-size: 0.88rem;
+  pointer-events: none;
+}
+
+/* Category Chips Bar */
+#gmaps-category-chips {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none; /* Hide scrollbar for Chrome/Safari */
+}
+
+#gmaps-category-chips::-webkit-scrollbar {
+  display: none;
+}
+
+.chip-btn {
+  background: var(--gm-surface);
+  border: 1px solid var(--gm-border);
+  border-radius: 16px;
+  color: var(--gm-text-primary);
+  font-family: var(--font-family);
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 6px 14px;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transition: all 0.2s ease;
+}
+
+.chip-btn i {
+  font-size: 0.85rem;
+  color: var(--gm-blue);
+}
+
+.chip-btn:hover {
+  background: var(--gm-hover);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.chip-btn.active {
+  background: #2d3848;
+  border-color: var(--gm-blue);
+  color: var(--gm-blue);
+}
+
+.chip-btn.active i {
+  color: var(--gm-blue-light);
+}
+
+/* ==========================================================================
+   3. Google Maps Side Drawer / Detail Sheet
+   ========================================================================== */
+
+.gmaps-drawer {
+  position: absolute;
+  top: 120px;
+  left: 12px;
+  width: 392px;
+  max-width: calc(100vw - 24px);
+  max-height: calc(100vh - 140px);
+  background: var(--gm-surface);
+  border: 1px solid var(--gm-border);
+  border-radius: 16px;
+  box-shadow: var(--gm-shadow-panel);
+  z-index: 15;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease;
+}
+
+.gmaps-drawer.collapsed {
+  transform: translateY(-12px) scale(0.96);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.drawer-header {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--gm-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--gm-text-primary);
+}
+
+.panel-tabs {
+  display: flex;
+  background: var(--gm-bg);
+  border-bottom: 1px solid var(--gm-border);
+  padding: 4px;
+}
+
+.tab-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 10px 8px;
+  color: var(--gm-text-secondary);
+  font-family: var(--font-family);
+  font-size: 0.82rem;
+  font-weight: 500;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.tab-btn:hover {
+  background: var(--gm-hover);
+  color: var(--gm-text-primary);
+}
+
+.tab-btn.active {
+  background: var(--gm-surface);
+  color: var(--gm-blue);
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.tab-content {
+  display: none;
+  padding: 18px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* Forms inside Drawer */
+.gmaps-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--gm-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--gm-bg);
+  border: 1px solid var(--gm-border);
+  border-radius: 8px;
+  color: var(--gm-text-primary);
+  font-family: var(--font-family);
+  font-size: 0.88rem;
+  transition: border-color 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--gm-blue);
+  background: #25272b;
+}
+
+.input-icon-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon-group i {
+  position: absolute;
+  left: 12px;
+  font-size: 0.85rem;
+}
+
+.input-icon-group input {
+  padding-left: 34px !important;
+}
+
+.form-hint {
+  font-size: 0.72rem;
+  color: var(--gm-text-muted);
+  margin-top: 4px;
+}
+
+/* Buttons */
+.btn {
+  padding: 10px 16px;
+  border-radius: 20px;
+  font-family: var(--font-family);
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background: var(--gm-blue-dark);
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background: #1967d2;
+  box-shadow: 0 2px 8px rgba(26, 115, 232, 0.4);
+}
+
+.btn-secondary {
+  background: var(--gm-hover);
+  color: var(--gm-text-primary);
+  border: 1px solid var(--gm-border);
+}
+
+.btn-secondary:hover {
+  background: var(--gm-active);
+}
+
+.btn-ai-sparkle {
+  background: linear-gradient(135deg, #7c4dff, #c58af9);
+  color: #ffffff;
+}
+
+.btn-ai-sparkle:hover {
+  opacity: 0.92;
+  box-shadow: 0 2px 10px rgba(197, 138, 249, 0.4);
+}
+
+.section-subtitle {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--gm-text-secondary);
+  margin-bottom: 10px;
+}
+
+.list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.list-item-card {
+  background: var(--gm-bg);
+  border: 1px solid var(--gm-border);
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: border-color 0.2s ease;
+}
+
+.list-item-card:hover {
+  border-color: var(--gm-blue);
+}
+
+.list-item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.list-item-title {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--gm-text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.category-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+
+}
+.category-dot.cat-food { background-color: var(--gm-yellow); }
+.category-dot.cat-sightseeing { background-color: var(--gm-green); }
+.category-dot.cat-work { background-color: var(--gm-blue); }
+.category-dot.cat-home { background-color: var(--gm-red); }
+.category-dot.cat-default { background-color: var(--gm-purple); }
+
+.list-item-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.icon-btn {
+  background: transparent;
+  border: none;
+  color: var(--gm-text-secondary);
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.icon-btn:hover {
+  background: var(--gm-hover);
+  color: var(--gm-text-primary);
+}
+
+.icon-btn.delete:hover {
+  color: var(--gm-red);
+}
+
+.list-item-desc {
+  font-size: 0.8rem;
+  color: var(--gm-text-secondary);
+  line-height: 1.4;
+}
+
+.list-item-meta {
+  font-size: 0.74rem;
+  color: var(--gm-text-muted);
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid var(--gm-border-light);
+  padding-top: 6px;
+  margin-top: 4px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 24px 12px;
+  color: var(--gm-text-muted);
+  font-size: 0.82rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.empty-state i {
+  font-size: 1.8rem;
+  color: var(--gm-text-muted);
+}
+
+/* ==========================================================================
+   4. Floating Bottom-Right Google Maps Controls
+   ========================================================================== */
+
+#gmaps-floating-controls {
+  position: absolute;
+  bottom: 24px;
+  right: 16px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.gmaps-fab {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--gm-surface);
+  border: 1px solid var(--gm-border);
+  color: var(--gm-text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.05rem;
+  cursor: pointer;
+  box-shadow: var(--gm-shadow-fab);
+  transition: all 0.2s ease;
+}
+
+.gmaps-fab:hover {
+  background: var(--gm-hover);
+  color: var(--gm-blue);
+  border-color: var(--gm-blue);
+}
+
+.gmaps-fab-group {
+  display: flex;
+  flex-direction: column;
+  background: var(--gm-surface);
+  border: 1px solid var(--gm-border);
+  border-radius: 20px;
+  box-shadow: var(--gm-shadow-fab);
+  overflow: hidden;
+}
+
+.gmaps-fab-group .gmaps-fab {
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+}
+
+.gmaps-fab-group .fab-top {
+  border-bottom: 1px solid var(--gm-border);
+}
+
+/* ==========================================================================
+   5. AI Chat Assistant Panel (Right Side Drawer)
+   ========================================================================== */
+
+.gmaps-ai-panel {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 380px;
+  max-width: calc(100vw - 24px);
+  height: calc(100vh - 24px);
+  background: var(--gm-surface);
+  border: 1px solid var(--gm-border);
+  border-radius: 16px;
+  box-shadow: var(--gm-shadow-panel);
+  z-index: 25;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease;
+}
+
+.gmaps-ai-panel.collapsed {
+  transform: translateX(400px);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.chat-status {
+  padding: 8px 16px;
+  background: var(--gm-bg);
+  border-bottom: 1px solid var(--gm-border);
+  font-size: 0.76rem;
+  color: var(--gm-text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#chat-messages {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.chat-bubble {
+  max-width: 85%;
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+.chat-bubble.ai {
+  background: #2a2c33;
+  color: var(--gm-text-primary);
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+  border: 1px solid var(--gm-border-light);
+}
+
+.chat-bubble.user {
+  background: var(--gm-blue-dark);
+  color: #ffffff;
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+}
+
+.chat-bubble.system {
+  background: rgba(197, 138, 249, 0.12);
+  color: var(--gm-purple);
+  border: 1px solid rgba(197, 138, 249, 0.3);
+  font-size: 0.78rem;
+  align-self: center;
+  text-align: center;
+}
+
+.chat-input-container {
+  padding: 12px 14px;
+  border-top: 1px solid var(--gm-border);
+  display: flex;
+  gap: 8px;
+  background: var(--gm-surface);
+}
+
+.chat-input-container input {
+  flex: 1;
+  padding: 10px 14px;
+  background: var(--gm-bg);
+  border: 1px solid var(--gm-border);
+  border-radius: 20px;
+  color: var(--gm-text-primary);
+  font-family: var(--font-family);
+  font-size: 0.85rem;
+}
+
+.chat-input-container input:focus {
+  outline: none;
+  border-color: var(--gm-blue);
+}
+
+.chat-send-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--gm-blue-dark);
+  border: none;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.chat-send-btn:hover {
+  background: #1967d2;
+}
+
+/* Toasts */
+.toast-container {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.geofence-toast {
+  pointer-events: auto;
+  background: #282a2e;
+  border: 1px solid var(--gm-red);
+  border-left: 5px solid var(--gm-red);
+  border-radius: 8px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: var(--gm-shadow-panel);
+  animation: slide-up 0.3s ease;
+}
+
+@keyframes slide-up {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.toast-icon { color: var(--gm-red); font-size: 1.2rem; }
+.toast-title { font-weight: 600; font-size: 0.84rem; color: var(--gm-text-primary); }
+.toast-desc { font-size: 0.78rem; color: var(--gm-text-secondary); }
+.toast-close { background: none; border: none; color: var(--gm-text-muted); cursor: pointer; }
+
+/* Settings Modal */
+.settings-modal {
+  margin: auto;
+  background: var(--gm-surface);
+  border: 1px solid var(--gm-border);
+  border-radius: 16px;
+  padding: 24px;
+  color: var(--gm-text-primary);
+  width: 400px;
+  max-width: 90vw;
+  box-shadow: var(--gm-shadow-panel);
+}
+
+.settings-modal::backdrop {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+}
+
+.settings-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}

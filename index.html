@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Better Maps - Dark Google Maps Edition</title>
+    <!-- Google Fonts: Inter & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div id="app-container">
+      
+      <!-- 1. Interactive Google Map -->
+      <div id="map-container">
+        <div id="map"></div>
+      </div>
+
+      <!-- 2. Top GPS Live Simulation Badge -->
+      <div id="simulation-panel" class="gmaps-pill-badge">
+        <span class="pulse-dot"></span>
+        <span class="sim-title">GPS Simulação</span>
+        <span id="sim-coords" class="sim-coords">Lat: -23.550520, Lng: -46.633308</span>
+        <span class="sim-hint"><i class="fa-solid fa-hand-pointer"></i> Clique no mapa p/ mover</span>
+      </div>
+
+      <!-- 3. Top-Left Google Maps Search Widget & Category Chips -->
+      <div id="gmaps-top-container">
+        <!-- Floating Google Search Card -->
+        <div id="gmaps-search-card" class="gmaps-card">
+          <button id="toggle-drawer-btn" class="gmaps-icon-btn" title="Menu e Painel">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          
+          <div class="search-input-wrapper">
+            <input type="text" id="address-search" placeholder="Pesquisar no Better Maps..." autocomplete="off" />
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          </div>
+
+          <div class="gmaps-divider"></div>
+
+          <button id="quick-directions-btn" class="gmaps-icon-btn action-btn-blue" title="Rotas & Direções">
+            <i class="fa-solid fa-diamond-turn-right"></i>
+          </button>
+
+          <button id="settings-btn" class="gmaps-icon-btn" title="Configurações">
+            <i class="fa-solid fa-gear"></i>
+          </button>
+
+          <button id="toggle-chat-btn" class="gmaps-icon-btn ai-sparkle-btn" title="Better AI Agent">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+          </button>
+        </div>
+
+        <!-- Horizontal Category Chips Bar -->
+        <div id="gmaps-category-chips" class="custom-scrollbar">
+          <button class="chip-btn active" data-tab="tab-checkin">
+            <i class="fa-solid fa-location-dot"></i> Check-ins
+          </button>
+          <button class="chip-btn" data-tab="tab-alerts">
+            <i class="fa-solid fa-bell"></i> Alertas
+          </button>
+          <button class="chip-btn" data-tab="tab-routes">
+            <i class="fa-solid fa-route"></i> Rotas
+          </button>
+          <button class="chip-btn" data-quick-search="Restaurantes">
+            <i class="fa-solid fa-utensils"></i> Restaurantes
+          </button>
+          <button class="chip-btn" data-quick-search="Café">
+            <i class="fa-solid fa-mug-hot"></i> Cafés
+          </button>
+          <button class="chip-btn" data-quick-search="Posto de combustivel">
+            <i class="fa-solid fa-gas-pump"></i> Postos
+          </button>
+          <button class="chip-btn" data-quick-search="Supermercado">
+            <i class="fa-solid fa-cart-shopping"></i> Mercados
+          </button>
+        </div>
+      </div>
+
+      <!-- 4. Google Maps Side Drawer / Detail Sheet -->
+      <div id="dashboard-panel" class="gmaps-drawer collapsed">
+        <div class="drawer-header">
+          <div class="brand-title">
+            <i class="fa-solid fa-map-location-dot" style="color: var(--gm-blue);"></i>
+            <span>Better Maps</span>
+          </div>
+          <button id="close-drawer-btn" class="gmaps-icon-btn" title="Fechar Painel">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <!-- Features Tabs inside Drawer -->
+        <div class="panel-tabs">
+          <button class="tab-btn active" data-tab="tab-checkin">
+            <i class="fa-solid fa-location-dot"></i> Check-ins
+          </button>
+          <button class="tab-btn" data-tab="tab-alerts">
+            <i class="fa-solid fa-bell"></i> Alertas
+          </button>
+          <button class="tab-btn" data-tab="tab-routes">
+            <i class="fa-solid fa-route"></i> Rotas
+          </button>
+        </div>
+
+        <!-- TAB CONTENT: Check-ins -->
+        <div id="tab-checkin" class="tab-content active custom-scrollbar">
+          <form id="checkin-form" class="gmaps-form">
+            <div class="form-group">
+              <label for="checkin-name">Nome do Local</label>
+              <input type="text" id="checkin-name" placeholder="Ex: Minha Cafeteria Favorita" required />
+            </div>
+            <div class="form-group">
+              <label for="checkin-notes">Notas / Experiência</label>
+              <textarea id="checkin-notes" rows="2" placeholder="O café expresso é ótimo. Tem Wi-Fi rápido..."></textarea>
+            </div>
+            <div class="form-group">
+              <label for="checkin-category">Categoria</label>
+              <select id="checkin-category">
+                <option value="default">Selecione uma Categoria</option>
+                <option value="food">Comida & Bebida 🍔</option>
+                <option value="sightseeing">Turismo / Lazer 📸</option>
+                <option value="work">Trabalho / Estudo 💼</option>
+                <option value="home">Residência / Amigos 🏠</option>
+              </select>
+            </div>
+            
+            <input type="hidden" id="checkin-lat" />
+            <input type="hidden" id="checkin-lng" />
+            <input type="hidden" id="checkin-address" />
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%;">
+              <i class="fa-solid fa-circle-check"></i> Fazer Check-in Aqui
+            </button>
+          </form>
+
+          <div style="margin-top: 20px; border-top: 1px solid var(--gm-border); padding-top: 15px;">
+            <h4 class="section-subtitle">Meus Locais Salvos</h4>
+            <div id="checkins-list" class="list-container">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB CONTENT: Geofencing Alerts -->
+        <div id="tab-alerts" class="tab-content custom-scrollbar">
+          <form id="alert-form" class="gmaps-form">
+            <div class="form-group">
+              <label for="alert-name">Nome da Cerca de Alerta</label>
+              <input type="text" id="alert-name" placeholder="Ex: Zona de Perigo ou Posto Gasolina" required />
+            </div>
+            <div class="form-group">
+              <label for="alert-radius">Raio de Alerta (metros)</label>
+              <input type="number" id="alert-radius" value="200" min="50" max="5000" step="50" required />
+            </div>
+            
+            <input type="hidden" id="alert-lat" />
+            <input type="hidden" id="alert-lng" />
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%;">
+              <i class="fa-solid fa-bell-plus"></i> Criar Alerta no Ponto Selecionado
+            </button>
+            <div class="form-hint">
+              * Clique em qualquer lugar do mapa para definir o ponto do alerta.
+            </div>
+          </form>
+
+          <div style="margin-top: 20px; border-top: 1px solid var(--gm-border); padding-top: 15px;">
+            <h4 class="section-subtitle">Alertas Ativos</h4>
+            <div id="alerts-list" class="list-container">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB CONTENT: Routes -->
+        <div id="tab-routes" class="tab-content custom-scrollbar">
+          <div class="gmaps-form">
+            <div class="form-group">
+              <label for="route-origin">Origem</label>
+              <div class="input-icon-group">
+                <i class="fa-regular fa-circle" style="color: var(--gm-blue);"></i>
+                <input type="text" id="route-origin" placeholder="De onde? (ou Localização Atual)" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="route-destination">Destino</label>
+              <div class="input-icon-group">
+                <i class="fa-solid fa-location-dot" style="color: var(--gm-red);"></i>
+                <input type="text" id="route-destination" placeholder="Para onde vai?" />
+              </div>
+            </div>
+            
+            <div style="display: flex; gap: 10px;">
+              <button id="clear-route-btn" class="btn btn-secondary" style="flex: 1;">
+                Limpar
+              </button>
+              <button id="get-route-btn" class="btn btn-primary" style="flex: 2;">
+                <i class="fa-solid fa-diamond-turn-right"></i> Traçar Rota
+              </button>
+            </div>
+          </div>
+
+          <div id="route-summary" style="margin-top: 20px; display: none;">
+            <div class="list-item-card" style="border-color: var(--gm-blue);">
+              <div class="list-item-title" style="color: var(--gm-blue);">
+                <i class="fa-solid fa-road"></i> Detalhes do Trajeto
+              </div>
+              <div id="route-details" class="list-item-desc" style="margin-top: 5px;">
+                <!-- Dynamically populated -->
+              </div>
+              <button id="ai-route-insight-btn" class="btn btn-ai-sparkle" style="width: 100%; margin-top: 10px; font-size: 0.82rem;">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Dicas de IA sobre a Rota
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Floating Bottom-Right Google Maps Controls -->
+      <div id="gmaps-floating-controls">
+        <button id="btn-recenter" class="gmaps-fab" title="Sua Posição (GPS)">
+          <i class="fa-solid fa-location-crosshairs"></i>
+        </button>
+        <button id="btn-toggle-layer" class="gmaps-fab" title="Alternar Mapa Escuro / Satélite">
+          <i class="fa-solid fa-layer-group"></i>
+        </button>
+        <div class="gmaps-fab-group">
+          <button id="btn-zoom-in" class="gmaps-fab fab-top" title="Aumentar Zoom">
+            <i class="fa-solid fa-plus"></i>
+          </button>
+          <button id="btn-zoom-out" class="gmaps-fab fab-bottom" title="Diminuir Zoom">
+            <i class="fa-solid fa-minus"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 6. AI Chat Assistant Panel (Right Side) -->
+      <div id="chat-panel" class="gmaps-ai-panel collapsed">
+        <div class="panel-header">
+          <h2><i class="fa-solid fa-brain" style="color: var(--gm-purple);"></i> Better AI Agent</h2>
+          <button id="close-chat-btn" class="gmaps-icon-btn" title="Fechar Chat">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <div id="chat-status" class="chat-status">
+          <i class="fa-solid fa-circle-nodes" style="color: var(--gm-blue);"></i>
+          <span id="chat-status-text">Sem rota selecionada</span>
+        </div>
+
+        <div id="chat-messages" class="custom-scrollbar">
+          <div class="chat-bubble ai">
+            Olá! Sou o seu assistente de rotas Better AI. 
+            Como posso ajudar você hoje? Você pode traçar uma rota e me perguntar dicas sobre ela, ou tirar dúvidas sobre o seu percurso.
+          </div>
+        </div>
+
+        <div class="chat-input-container">
+          <input type="text" id="chat-input" placeholder="Escreva uma mensagem para a IA..." />
+          <button id="send-chat-btn" class="chat-send-btn">
+            <i class="fa-solid fa-paper-plane"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 7. Notifications Toast Container -->
+      <div id="toast-container" class="toast-container">
+        <!-- Dynamically populated -->
+      </div>
+
+    </div>
+
+    <!-- 8. Settings Modal Dialog -->
+    <dialog id="settings-dialog" class="settings-modal">
+      <h3>Configurações do Better Maps</h3>
+      <form method="dialog" id="settings-form">
+        <div class="form-group">
+          <label for="settings-gemini-key">Gemini API Key</label>
+          <input type="password" id="settings-gemini-key" placeholder="AIzaSy..." />
+          <div class="form-hint">
+            Obtenha sua chave gratuita em: <a href="https://aistudio.google.com/" target="_blank" style="color: var(--gm-blue); text-decoration: none;">Google AI Studio</a>. Salva localmente no seu browser.
+          </div>
+        </div>
+        
+        <div class="form-group" style="margin-top: 14px;">
+          <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+            <input type="checkbox" id="settings-sound" style="width: auto;" checked />
+            <span>Habilitar Alerta Sonoro de Proximidade</span>
+          </label>
+        </div>
+
+        <div class="settings-actions">
+          <button type="button" id="settings-cancel" class="btn btn-secondary">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Salvar Configurações</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

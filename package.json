@@ -1,0 +1,18 @@
+{
+  "name": "better-maps",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^8.2.0"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "@googlemaps/js-api-loader": "^2.1.1"
+  }
+}
